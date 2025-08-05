@@ -1,6 +1,6 @@
-import 'package:currency_app/config/constants/app_colors.dart';
-import 'package:currency_app/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:social_connection/utils/app_colors.dart';
+import 'package:social_connection/theme/app_text_theme.dart';
 
 class AppWidgetTheme {
   AppWidgetTheme._();
@@ -10,6 +10,7 @@ class AppWidgetTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
     ),
   );
+
   static InputDecorationTheme textFieldDarkTheme = InputDecorationTheme(
     prefixIconColor: AppColors.materialWhite,
     hintStyle: AppTextTheme.darkTextTheme.titleMedium,
@@ -25,25 +26,6 @@ class AppWidgetTheme {
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: AppColors.materialWhite),
-      borderRadius: BorderRadius.circular(12),
-    ),
-  );
-
-  static InputDecorationTheme textFieldLightTheme = InputDecorationTheme(
-    prefixIconColor: AppColors.materialBlack,
-    hintStyle: AppTextTheme.lightTextTheme.titleMedium,
-    filled: true,
-    fillColor: AppColors.materialSoftGrey,
-    border: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.materialBlack),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.materialBlack),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.materialBlack),
       borderRadius: BorderRadius.circular(12),
     ),
   );

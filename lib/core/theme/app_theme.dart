@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:social_connection/utils/app_colors.dart';
-import 'package:social_connection/theme/app_text_theme.dart';
-import 'package:social_connection/theme/app_widget_theme.dart';
+import 'package:social_connection/core/utils/app_colors.dart';
+import 'package:social_connection/core/theme/app_text_theme.dart';
+import 'package:social_connection/core/theme/app_widget_theme.dart';
 
 class AppTheme {
   AppTheme._();

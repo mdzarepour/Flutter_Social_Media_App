@@ -4,7 +4,7 @@ import 'package:social_connection/firebase_options.dart';
 import 'package:social_connection/responsive/mobile_screen_layout.dart';
 import 'package:social_connection/responsive/responsive_screen_layout.dart';
 import 'package:social_connection/responsive/web_screen_layout.dart';
-import 'package:social_connection/theme/app_theme.dart';
+import 'package:social_connection/core/theme/app_theme.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();

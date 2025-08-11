@@ -1,15 +1,22 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'package:social_connection/firebase_options.dart';
-import 'package:social_connection/responsive/mobile_screen_layout.dart';
-import 'package:social_connection/responsive/responsive_screen_layout.dart';
-import 'package:social_connection/responsive/web_screen_layout.dart';
 import 'package:social_connection/core/theme/app_theme.dart';
+import 'package:social_connection/resources/auth_methods.dart';
+import 'package:social_connection/ui/screens/home_screen.dart';
+import 'package:social_connection/ui/screens/signin_screen.dart';
 
-void main(List<String> args) async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(Application());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => AuthMethods())],
+      child: Application(),
+    ),
+  );
 }
 
 class Application extends StatelessWidget {
@@ -17,12 +24,22 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthMethods authMethods = Provider.of<AuthMethods>(
+      context,
+      listen: false,
+    );
+
     return MaterialApp(
-      theme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
-      home: ResponsiveScreenLayout(
-        mobileScreen: MobileScreenLayout(),
-        webScreen: WebScreenLayout(),
+      theme: AppTheme.darkTheme,
+      home: StreamBuilder<User?>(
+        stream: authMethods.stateChanges,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return HomeScreen();
+          }
+          return const SigninScreen();
+        },
       ),
     );
   }

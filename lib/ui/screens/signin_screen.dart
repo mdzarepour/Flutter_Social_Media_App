@@ -1,6 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:social_connection/core/utils/app_strings.dart';
+import 'package:social_connection/resources/auth_methods.dart';
+import 'package:social_connection/resources/regex_methods.dart';
+import 'package:social_connection/ui/screens/signup_screen.dart';
 import 'package:social_connection/ui/widgets/text_field_input_widget.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -13,64 +19,101 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen> {
   GlobalKey<FormState> formKey = GlobalKey();
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  late final AuthMethods _authMethods;
+  final RegexMethods _regexMethods = RegexMethods();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _authMethods = Provider.of<AuthMethods>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _authMethods.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme scheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
       child: Scaffold(
         body: LayoutBuilder(
           builder: (context, constraints) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsetsGeometry.symmetric(
-                  horizontal: constraints.maxWidth * 0.09,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: constraints.maxHeight * 0.2),
-                    Text(style: textTheme.headlineLarge, AppStrings.signIn),
-                    Text(style: textTheme.bodyMedium, AppStrings.signInMsg),
-                    SizedBox(height: constraints.maxHeight * 0.05),
-                    Form(
-                      key: formKey,
-                      child: Column(
-                        spacing: constraints.maxHeight * 0.025,
-                        children: [
-                          TextFieldInputWidget(
-                            controller: emailController,
-                            hint: AppStrings.email,
-                            icon: Iconsax.send_1_copy,
-                            validator: (value) => emailValidator(value),
-                          ),
-                          TextFieldInputWidget(
-                            controller: passwordController,
-                            hint: AppStrings.password,
-                            icon: Iconsax.key_copy,
-                            validator: (value) => passwordValidator(value),
-                          ),
-                          SizedBox(
-                            width: constraints.maxWidth,
-                            height: constraints.maxHeight * 0.06,
-                            child: FilledButton(
-                              child: Text(
-                                style: textTheme.bodyMedium,
-                                AppStrings.signIn,
+            return Padding(
+              padding: EdgeInsetsGeometry.symmetric(
+                horizontal: constraints.maxWidth * 0.09,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: constraints.maxHeight * 0.2),
+                  Text(style: textTheme.headlineLarge, AppStrings.signIn),
+                  Text(style: textTheme.bodyMedium, AppStrings.signInMsg),
+                  SizedBox(height: constraints.maxHeight * 0.05),
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      spacing: constraints.maxHeight * 0.025,
+                      children: [
+                        TextFieldInputWidget(
+                          controller: _emailController,
+                          hint: AppStrings.email,
+                          icon: Iconsax.send_1_copy,
+                          validator: (value) =>
+                              _regexMethods.emailValidator(value),
+                        ),
+                        TextFieldInputWidget(
+                          controller: _passwordController,
+                          hint: AppStrings.password,
+                          icon: Iconsax.key_copy,
+                          validator: (value) =>
+                              _regexMethods.passwordValidator(value),
+                        ),
+                        _signInButton(constraints, scheme.secondaryContainer),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => SignupScreen(),
                               ),
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {}
-                              },
+                            );
+                          },
+                          child: RichText(
+                            textAlign: TextAlign.start,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  style: textTheme.titleMedium,
+                                  text: 'dont have any account?  ',
+                                ),
+                                TextSpan(
+                                  style: textTheme.titleSmall,
+                                  text: 'create account',
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+
+                        Text(
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodySmall,
+                          context.watch<AuthMethods>().errorMessage ?? '',
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
@@ -79,26 +122,28 @@ class _SigninScreenState extends State<SigninScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-  }
-
-  String? emailValidator(String value) {
-    if (value.isEmpty) {
-      return 'please enter email';
-    } else {
-      return null;
-    }
-  }
-
-  String? passwordValidator(String value) {
-    if (value.isEmpty) {
-      return 'please enter password';
-    } else {
-      return null;
-    }
+  SizedBox _signInButton(BoxConstraints constraints, var color) {
+    return SizedBox(
+      width: constraints.maxWidth,
+      height: constraints.maxHeight * 0.06,
+      child: FilledButton(
+        onPressed: () {
+          if (formKey.currentState!.validate()) {
+            _authMethods.signIn(
+              _emailController.text,
+              _passwordController.text,
+            );
+          }
+        },
+        child: Consumer<AuthMethods>(
+          builder: (context, provider, child) {
+            if (provider.authState == AuthState.loading) {
+              return SpinKitThreeBounce(color: color, size: 20);
+            }
+            return Text('Sign In');
+          },
+        ),
+      ),
+    );
   }
 }

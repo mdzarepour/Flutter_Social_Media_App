@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:social_connection/core/utils/app_strings.dart';
 import 'package:social_connection/resources/auth_methods.dart';
 import 'package:social_connection/resources/regex_methods.dart';
@@ -13,19 +15,37 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  late final AuthMethods _authMethods;
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final RegexMethods _regexMethods = RegexMethods();
-  final AuthMethods _authMethods = AuthMethods();
 
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _biographyController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _authMethods = Provider.of<AuthMethods>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    _authMethods.dispose();
+    _emailController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _biographyController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
       child: Scaffold(
@@ -87,14 +107,42 @@ class _SignupScreenState extends State<SignupScreen> {
                             child: FilledButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  _signUp();
+                                  _authMethods.signUp(
+                                    username: _usernameController.text,
+                                    biography: _biographyController.text,
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                  );
                                 }
                               },
-                              child: Text(
-                                AppStrings.signIn,
-                                style: textTheme.bodyMedium,
+                              child: Consumer<AuthMethods>(
+                                builder: (context, provider, child) {
+                                  if (provider.authState == AuthState.loading) {
+                                    return SpinKitThreeBounce(
+                                      color: scheme.secondaryContainer,
+                                      size: 20,
+                                    );
+                                  } else if (provider.authState ==
+                                      AuthState.successfull) {
+                                    provider.authState = AuthState.empty;
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                          Navigator.pop(context);
+                                        });
+                                  } else if (provider.authState ==
+                                      AuthState.waitingVerify) {
+                                    return Text('check your email for verify');
+                                  }
+                                  return Text('Sign Up');
+                                },
                               ),
                             ),
+                          ),
+                          SizedBox(height: constraints.maxHeight * 0.02),
+                          Text(
+                            textAlign: TextAlign.center,
+                            style: textTheme.bodySmall,
+                            context.watch<AuthMethods>().errorMessage ?? '',
                           ),
                         ],
                       ),
@@ -107,23 +155,5 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
-  }
-
-  void _signUp() {
-    _authMethods.signUp(
-      email: _emailController.text.trim(),
-      biography: _biographyController.text,
-      password: _passwordController.text.trim(),
-      username: _usernameController.text.trim(),
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _emailController.dispose();
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _biographyController.dispose();
   }
 }

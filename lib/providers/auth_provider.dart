@@ -29,13 +29,13 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
 
       UserCredential user = await _authMethods.createUser(email, password);
-      await _authMethods.sendEmailVerification();
+      _authMethods.sendEmailVerification();
 
       authState = AuthState.waitingVerify;
       notifyListeners();
 
       Timer.periodic(Duration(seconds: 1), (value) async {
-        await _authMethods.reloadUser();
+        _authMethods.reloadUser();
         if (currentUser!.emailVerified) {
           authState = AuthState.successfull;
           value.cancel();
@@ -70,6 +70,24 @@ class AuthProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       authState = AuthState.error;
       errorMessage = ErrorMethods.getSigInError(e.code);
+      notifyListeners();
+    } catch (e) {
+      developer.log(e.toString());
+    }
+  }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    authState = AuthState.loading;
+    notifyListeners();
+
+    try {
+      await _authMethods.sendPasswordResetEmail(email);
+      authState = AuthState.successfull;
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      errorMessage = ErrorMethods.getPasswordResetError(e.code);
+
+      authState = AuthState.error;
       notifyListeners();
     } catch (e) {
       developer.log(e.toString());

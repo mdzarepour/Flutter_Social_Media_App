@@ -7,6 +7,7 @@ import 'package:social_connection/core/utils/app_strings.dart';
 import 'package:social_connection/providers/auth_provider.dart';
 import 'package:social_connection/resources/regex_methods.dart';
 import 'package:social_connection/ui/screens/signup_screen.dart';
+import 'package:social_connection/ui/widgets/password_reset_widget.dart';
 import 'package:social_connection/ui/widgets/text_field_input_widget.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -20,7 +21,6 @@ class _SigninScreenState extends State<SigninScreen> {
   GlobalKey<FormState> formKey = GlobalKey();
 
   late final AuthProvider _authProvider;
-  final RegexMethods _regexMethods = RegexMethods();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -52,10 +52,11 @@ class _SigninScreenState extends State<SigninScreen> {
                 horizontal: constraints.maxWidth * 0.09,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: constraints.maxHeight * 0.2),
                   Text(style: textTheme.headlineLarge, AppStrings.signIn),
+                  SizedBox(height: constraints.maxHeight * 0.01),
                   Text(style: textTheme.bodyMedium, AppStrings.signInMsg),
                   SizedBox(height: constraints.maxHeight * 0.05),
                   Form(
@@ -68,42 +69,16 @@ class _SigninScreenState extends State<SigninScreen> {
                           hint: AppStrings.email,
                           icon: Iconsax.send_1_copy,
                           validator: (value) =>
-                              _regexMethods.emailValidator(value),
+                              RegexMethods.emailValidator(value),
                         ),
                         TextFieldInputWidget(
                           controller: _passwordController,
                           hint: AppStrings.password,
                           icon: Iconsax.key_copy,
                           validator: (value) =>
-                              _regexMethods.passwordValidator(value),
+                              RegexMethods.passwordValidator(value),
                         ),
                         _signInButton(constraints, scheme.secondaryContainer),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => SignupScreen(),
-                              ),
-                            );
-                          },
-                          child: RichText(
-                            textAlign: TextAlign.start,
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  style: textTheme.titleMedium,
-                                  text: AppStrings.dontHaveAccount,
-                                ),
-                                TextSpan(
-                                  style: textTheme.titleSmall,
-                                  text: AppStrings.createAccount,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
                         Text(
                           textAlign: TextAlign.center,
                           style: textTheme.bodySmall,
@@ -112,6 +87,59 @@ class _SigninScreenState extends State<SigninScreen> {
                       ],
                     ),
                   ),
+                  Spacer(),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => SignupScreen(),
+                        ),
+                      );
+                    },
+                    child: RichText(
+                      textAlign: TextAlign.start,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            style: textTheme.titleMedium,
+                            text: AppStrings.dontHaveAccount,
+                          ),
+                          TextSpan(
+                            style: textTheme.titleSmall,
+                            text: AppStrings.createAccount,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: constraints.maxHeight * 0.02),
+                  InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return PasswordResetWidget();
+                        },
+                      );
+                    },
+                    child: RichText(
+                      textAlign: TextAlign.start,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            style: textTheme.titleMedium,
+                            text: 'forget your password?    ',
+                          ),
+                          TextSpan(
+                            style: textTheme.titleSmall,
+                            text: 'reset password',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: constraints.maxHeight * 0.08),
                 ],
               ),
             );
@@ -121,7 +149,7 @@ class _SigninScreenState extends State<SigninScreen> {
     );
   }
 
-  SizedBox _signInButton(BoxConstraints constraints, var color) {
+  Widget _signInButton(BoxConstraints constraints, Color color) {
     return SizedBox(
       width: constraints.maxWidth,
       height: constraints.maxHeight * 0.06,

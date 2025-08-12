@@ -7,7 +7,10 @@ class AppWidgetTheme {
 
   static FilledButtonThemeData filledButtonTheme = FilledButtonThemeData(
     style: FilledButton.styleFrom(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.materialWhite),
+      ),
     ),
   );
 

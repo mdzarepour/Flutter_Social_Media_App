@@ -8,7 +8,6 @@ class AuthMethods {
   Future<UserCredential> createUser(String email, String password) async {
     final UserCredential userCredential = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
-
     return userCredential;
   }
 
@@ -19,8 +18,11 @@ class AuthMethods {
   Future<UserCredential> signIn(String email, String password) async {
     UserCredential userCredential = await _firebaseAuth
         .signInWithEmailAndPassword(email: email, password: password);
-
     return userCredential;
+  }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   Future<void> reloadUser() async {

@@ -18,8 +18,6 @@ class _SignupScreenState extends State<SignupScreen> {
   late final AuthProvider _authProvider;
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  final RegexMethods _regexMethods = RegexMethods();
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
@@ -73,7 +71,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             hint: AppStrings.username,
                             icon: Iconsax.user_copy,
                             validator: (value) =>
-                                _regexMethods.usernameValidator(value),
+                                RegexMethods.usernameValidator(value),
                           ),
                           const SizedBox(height: 16),
                           TextFieldInputWidget(
@@ -81,7 +79,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             hint: AppStrings.biography,
                             icon: Iconsax.information_copy,
                             validator: (value) =>
-                                _regexMethods.biographyValidator(value),
+                                RegexMethods.biographyValidator(value),
                           ),
                           const SizedBox(height: 16),
                           TextFieldInputWidget(
@@ -89,7 +87,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             hint: AppStrings.email,
                             icon: Iconsax.send_1_copy,
                             validator: (value) =>
-                                _regexMethods.emailValidator(value),
+                                RegexMethods.emailValidator(value),
                           ),
                           const SizedBox(height: 16),
                           TextFieldInputWidget(
@@ -97,46 +95,10 @@ class _SignupScreenState extends State<SignupScreen> {
                             hint: AppStrings.password,
                             icon: Iconsax.key_copy,
                             validator: (value) =>
-                                _regexMethods.passwordValidator(value),
+                                RegexMethods.passwordValidator(value),
                           ),
                           const SizedBox(height: 32),
-                          SizedBox(
-                            width: constraints.maxWidth,
-                            height: constraints.maxHeight * 0.06,
-                            child: FilledButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  _authProvider.signUp(
-                                    username: _usernameController.text,
-                                    biography: _biographyController.text,
-                                    email: _emailController.text,
-                                    password: _passwordController.text,
-                                  );
-                                }
-                              },
-                              child: Consumer<AuthProvider>(
-                                builder: (context, provider, child) {
-                                  if (provider.authState == AuthState.loading) {
-                                    return SpinKitThreeBounce(
-                                      color: scheme.secondaryContainer,
-                                      size: 20,
-                                    );
-                                  } else if (provider.authState ==
-                                      AuthState.successfull) {
-                                    provider.authState = AuthState.empty;
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) {
-                                          Navigator.pop(context);
-                                        });
-                                  } else if (provider.authState ==
-                                      AuthState.waitingVerify) {
-                                    return Text(AppStrings.checkEmailVerify);
-                                  }
-                                  return Text(AppStrings.signUp);
-                                },
-                              ),
-                            ),
-                          ),
+                          _signUpButton(constraints, scheme),
                           SizedBox(height: constraints.maxHeight * 0.02),
                           Text(
                             textAlign: TextAlign.center,
@@ -150,6 +112,43 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
             );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _signUpButton(BoxConstraints constraints, ColorScheme scheme) {
+    return SizedBox(
+      width: constraints.maxWidth,
+      height: constraints.maxHeight * 0.06,
+      child: FilledButton(
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            _authProvider.signUp(
+              username: _usernameController.text,
+              biography: _biographyController.text,
+              email: _emailController.text,
+              password: _passwordController.text,
+            );
+          }
+        },
+        child: Consumer<AuthProvider>(
+          builder: (context, provider, child) {
+            if (provider.authState == AuthState.loading) {
+              return SpinKitThreeBounce(
+                color: scheme.secondaryContainer,
+                size: 20,
+              );
+            } else if (provider.authState == AuthState.successfull) {
+              provider.authState = AuthState.empty;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pop(context);
+              });
+            } else if (provider.authState == AuthState.waitingVerify) {
+              return Text(AppStrings.checkEmailVerify);
+            }
+            return Text(AppStrings.signUp);
           },
         ),
       ),

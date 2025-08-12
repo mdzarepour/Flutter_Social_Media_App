@@ -1,5 +1,5 @@
 class RegexMethods {
-  String? usernameValidator(String? value) {
+  static String? usernameValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a username.';
     }
@@ -10,7 +10,7 @@ class RegexMethods {
     return null;
   }
 
-  String? biographyValidator(String? value) {
+  static String? biographyValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a biography.';
     }
@@ -20,7 +20,7 @@ class RegexMethods {
     return null;
   }
 
-  String? emailValidator(String? value) {
+  static String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter an email address.';
     }
@@ -33,7 +33,7 @@ class RegexMethods {
     return null;
   }
 
-  String? passwordValidator(String? value) {
+  static String? passwordValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a password.';
     }

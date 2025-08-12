@@ -48,4 +48,23 @@ class ErrorMethods {
         return 'An unexpected Firebase error occurred.';
     }
   }
+
+  static String? getPasswordResetError(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return 'The email address is not valid.';
+
+      case 'user-not-found':
+        return 'No user found for that email.';
+
+      case 'too-many-requests':
+        return 'Too many requests. Please try again later.';
+
+      case 'network-request-failed':
+        return 'Network error. Please check your internet connection.';
+
+      default:
+        return 'An unexpected error occurred while sending the reset email.';
+    }
+  }
 }

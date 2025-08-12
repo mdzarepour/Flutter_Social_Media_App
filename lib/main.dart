@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:social_connection/firebase_options.dart';
 import 'package:social_connection/core/theme/app_theme.dart';
 import 'package:social_connection/providers/auth_provider.dart';
-import 'package:social_connection/ui/screens/home_screen.dart';
-import 'package:social_connection/ui/screens/signin_screen.dart';
+import 'package:social_connection/view/screens/home_screen.dart';
+import 'package:social_connection/view/screens/signin_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

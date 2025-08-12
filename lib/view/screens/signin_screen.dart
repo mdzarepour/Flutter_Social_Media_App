@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -6,9 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:social_connection/core/utils/app_strings.dart';
 import 'package:social_connection/providers/auth_provider.dart';
 import 'package:social_connection/resources/regex_methods.dart';
-import 'package:social_connection/ui/screens/signup_screen.dart';
-import 'package:social_connection/ui/widgets/password_reset_widget.dart';
-import 'package:social_connection/ui/widgets/text_field_input_widget.dart';
+import 'package:social_connection/view/screens/signup_screen.dart';
+import 'package:social_connection/view/widgets/password_reset_widget.dart';
+import 'package:social_connection/view/widgets/text_field_input_widget.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -115,7 +116,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   ),
                   SizedBox(height: constraints.maxHeight * 0.02),
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       showModalBottomSheet(
                         context: context,
                         builder: (context) {

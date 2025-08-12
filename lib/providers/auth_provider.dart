@@ -7,36 +7,51 @@ import 'package:social_connection/resources/auth_methods.dart';
 import 'package:social_connection/resources/error_methods.dart';
 import 'dart:developer' as developer;
 
+import 'package:social_connection/resources/firestore_methods.dart';
+
 enum AuthState { empty, loading, waitingVerify, successfull, error }
 
 class AuthProvider extends ChangeNotifier {
   String? errorMessage;
   AuthState authState = AuthState.empty;
-  final AuthMethods _authMethods = AuthMethods();
+  final AuthMethods _auth = AuthMethods();
+  final FirestoreMethods _firestore = FirestoreMethods();
 
-  User? get currentUser => _authMethods.currentUser;
-  Stream<User?> get stateChanges => _authMethods.userStateChanges;
+  User? get currentUser => _auth.currentUser;
+  Stream<User?> get stateChanges => _auth.userStateChanges;
 
   Future<void> signUp({
+    required String password,
+    required String email,
     required String username,
     required String biography,
-    required String email,
-    required String password,
   }) async {
     try {
       authState = AuthState.loading;
       errorMessage = null;
       notifyListeners();
 
-      UserCredential user = await _authMethods.createUser(email, password);
-      _authMethods.sendEmailVerification();
-
+      UserCredential user = await _auth.createUser(
+        email: email,
+        password: password,
+        username: username,
+        biography: AutofillHints.creditCardName,
+      );
+      _auth.sendEmailVerification();
       authState = AuthState.waitingVerify;
       notifyListeners();
 
       Timer.periodic(Duration(seconds: 1), (value) async {
-        _authMethods.reloadUser();
+        _auth.reloadUser();
+
         if (currentUser!.emailVerified) {
+          _firestore.addCreatedUserToDB(
+            email: email,
+            password: password,
+            username: username,
+            biography: biography,
+            uid: currentUser!.uid,
+          );
           authState = AuthState.successfull;
           value.cancel();
         }
@@ -58,9 +73,12 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      UserCredential user = await _authMethods.signIn(email, password);
-
-      if (currentUser!.uid.isNotEmpty) {
+      UserCredential user = await _auth.signIn(email, password);
+      if (currentUser!.email == email) {
+        _firestore.addResettedPasswordToDB(
+          newPassword: password,
+          uid: currentUser!.uid,
+        );
         authState = AuthState.successfull;
         notifyListeners();
       }
@@ -81,7 +99,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authMethods.sendPasswordResetEmail(email);
+      await _auth.sendPasswordResetEmail(email);
       authState = AuthState.successfull;
       notifyListeners();
     } on FirebaseAuthException catch (e) {

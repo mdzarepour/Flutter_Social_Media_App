@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:social_connection/core/utils/app_strings.dart';
 import 'package:social_connection/providers/auth_provider.dart';
 import 'package:social_connection/resources/regex_methods.dart';
-import 'package:social_connection/ui/widgets/text_field_input_widget.dart';
+import 'package:social_connection/view/widgets/text_field_input_widget.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});

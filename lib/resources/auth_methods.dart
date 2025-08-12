@@ -5,7 +5,12 @@ class AuthMethods {
   User? get currentUser => _firebaseAuth.currentUser;
   Stream<User?> get userStateChanges => _firebaseAuth.authStateChanges();
 
-  Future<UserCredential> createUser(String email, String password) async {
+  Future<UserCredential> createUser({
+    required String email,
+    required String password,
+    required String username,
+    required String biography,
+  }) async {
     final UserCredential userCredential = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
     return userCredential;

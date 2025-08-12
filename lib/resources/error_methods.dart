@@ -1,5 +1,5 @@
 class ErrorMethods {
-  String getSignUpError(String code) {
+  static String getSignUpError(String code) {
     switch (code) {
       case 'email-already-in-use':
         return 'The email address is already in use by another account.';
@@ -21,7 +21,7 @@ class ErrorMethods {
     }
   }
 
-  getSigInError(String code) {
+  static getSigInError(String code) {
     switch (code) {
       case 'user-not-found':
         return 'No user found for that email.';

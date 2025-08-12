@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:social_connection/firebase_options.dart';
 import 'package:social_connection/core/theme/app_theme.dart';
-import 'package:social_connection/resources/auth_methods.dart';
+import 'package:social_connection/providers/auth_provider.dart';
 import 'package:social_connection/ui/screens/home_screen.dart';
 import 'package:social_connection/ui/screens/signin_screen.dart';
 
@@ -13,7 +13,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthMethods())],
+      providers: [ChangeNotifierProvider(create: (_) => AuthProvider())],
       child: Application(),
     ),
   );
@@ -24,7 +24,7 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthMethods authMethods = Provider.of<AuthMethods>(
+    final AuthProvider authMethods = Provider.of<AuthProvider>(
       context,
       listen: false,
     );

@@ -3,7 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:social_connection/core/utils/app_strings.dart';
-import 'package:social_connection/resources/auth_methods.dart';
+import 'package:social_connection/providers/auth_provider.dart';
 import 'package:social_connection/resources/regex_methods.dart';
 import 'package:social_connection/ui/widgets/text_field_input_widget.dart';
 
@@ -15,7 +15,7 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  late final AuthMethods _authMethods;
+  late final AuthProvider _authProvider;
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final RegexMethods _regexMethods = RegexMethods();
@@ -28,12 +28,11 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     super.initState();
-    _authMethods = Provider.of<AuthMethods>(context, listen: false);
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
   }
 
   @override
   void dispose() {
-    _authMethods.dispose();
     _emailController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
@@ -107,7 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             child: FilledButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  _authMethods.signUp(
+                                  _authProvider.signUp(
                                     username: _usernameController.text,
                                     biography: _biographyController.text,
                                     email: _emailController.text,
@@ -115,7 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   );
                                 }
                               },
-                              child: Consumer<AuthMethods>(
+                              child: Consumer<AuthProvider>(
                                 builder: (context, provider, child) {
                                   if (provider.authState == AuthState.loading) {
                                     return SpinKitThreeBounce(
@@ -131,9 +130,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                         });
                                   } else if (provider.authState ==
                                       AuthState.waitingVerify) {
-                                    return Text('check your email for verify');
+                                    return Text(AppStrings.checkEmailVerify);
                                   }
-                                  return Text('Sign Up');
+                                  return Text(AppStrings.signUp);
                                 },
                               ),
                             ),
@@ -142,7 +141,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           Text(
                             textAlign: TextAlign.center,
                             style: textTheme.bodySmall,
-                            context.watch<AuthMethods>().errorMessage ?? '',
+                            context.watch<AuthProvider>().errorMessage ?? '',
                           ),
                         ],
                       ),

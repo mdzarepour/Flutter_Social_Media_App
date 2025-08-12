@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:social_connection/core/utils/app_strings.dart';
-import 'package:social_connection/resources/auth_methods.dart';
+import 'package:social_connection/providers/auth_provider.dart';
 import 'package:social_connection/resources/regex_methods.dart';
 import 'package:social_connection/ui/screens/signup_screen.dart';
 import 'package:social_connection/ui/widgets/text_field_input_widget.dart';
@@ -19,7 +19,7 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen> {
   GlobalKey<FormState> formKey = GlobalKey();
 
-  late final AuthMethods _authMethods;
+  late final AuthProvider _authProvider;
   final RegexMethods _regexMethods = RegexMethods();
 
   final TextEditingController _emailController = TextEditingController();
@@ -28,13 +28,12 @@ class _SigninScreenState extends State<SigninScreen> {
   @override
   void initState() {
     super.initState();
-    _authMethods = Provider.of<AuthMethods>(context, listen: false);
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _authMethods.dispose();
     _emailController.dispose();
     _passwordController.dispose();
   }
@@ -94,11 +93,11 @@ class _SigninScreenState extends State<SigninScreen> {
                               children: [
                                 TextSpan(
                                   style: textTheme.titleMedium,
-                                  text: 'dont have any account?  ',
+                                  text: AppStrings.dontHaveAccount,
                                 ),
                                 TextSpan(
                                   style: textTheme.titleSmall,
-                                  text: 'create account',
+                                  text: AppStrings.createAccount,
                                 ),
                               ],
                             ),
@@ -108,7 +107,7 @@ class _SigninScreenState extends State<SigninScreen> {
                         Text(
                           textAlign: TextAlign.center,
                           style: textTheme.bodySmall,
-                          context.watch<AuthMethods>().errorMessage ?? '',
+                          context.watch<AuthProvider>().errorMessage ?? '',
                         ),
                       ],
                     ),
@@ -129,18 +128,18 @@ class _SigninScreenState extends State<SigninScreen> {
       child: FilledButton(
         onPressed: () {
           if (formKey.currentState!.validate()) {
-            _authMethods.signIn(
+            _authProvider.signIn(
               _emailController.text,
               _passwordController.text,
             );
           }
         },
-        child: Consumer<AuthMethods>(
+        child: Consumer<AuthProvider>(
           builder: (context, provider, child) {
             if (provider.authState == AuthState.loading) {
               return SpinKitThreeBounce(color: color, size: 20);
             }
-            return Text('Sign In');
+            return Text(AppStrings.signIn);
           },
         ),
       ),

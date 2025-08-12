@@ -7,4 +7,7 @@ class AppStrings {
   static const String password = 'password';
   static const String biography = 'biography';
   static const String username = 'username';
+  static const String checkEmailVerify = 'check your email for verify';
+  static const String createAccount = 'create cccount';
+  static const String dontHaveAccount = 'dont have any account?  ';
 }

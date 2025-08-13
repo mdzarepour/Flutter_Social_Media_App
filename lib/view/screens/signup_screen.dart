@@ -65,6 +65,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         controller: _usernameController,
                         hint: AppStrings.username,
                         icon: Iconsax.user_copy,
+                        isPassword: false,
                         validator: (value) =>
                             RegexMethods.usernameValidator(value),
                       ),
@@ -73,6 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         controller: _biographyController,
                         hint: AppStrings.biography,
                         icon: Iconsax.information_copy,
+                        isPassword: false,
                         validator: (value) =>
                             RegexMethods.biographyValidator(value),
                       ),
@@ -81,6 +83,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         controller: _emailController,
                         hint: AppStrings.email,
                         icon: Iconsax.send_1_copy,
+                        isPassword: false,
                         validator: (value) =>
                             RegexMethods.emailValidator(value),
                       ),
@@ -89,6 +92,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         controller: _passwordController,
                         hint: AppStrings.password,
                         icon: Iconsax.key_copy,
+                        isPassword: true,
                         validator: (value) =>
                             RegexMethods.passwordValidator(value),
                       ),

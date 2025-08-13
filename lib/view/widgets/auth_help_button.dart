@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:social_connection/core/utils/app_strings.dart';
 
 class AuthHelpButton extends StatelessWidget {
   final Function() onTap;

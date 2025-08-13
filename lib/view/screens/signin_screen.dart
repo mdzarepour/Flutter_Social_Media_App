@@ -68,6 +68,7 @@ class _SigninScreenState extends State<SigninScreen> {
                         controller: _emailController,
                         hint: AppStrings.email,
                         icon: Iconsax.send_1_copy,
+                        isPassword: false,
                         validator: (value) =>
                             RegexMethods.emailValidator(value),
                       ),
@@ -75,6 +76,7 @@ class _SigninScreenState extends State<SigninScreen> {
                         controller: _passwordController,
                         hint: AppStrings.password,
                         icon: Iconsax.key_copy,
+                        isPassword: true,
                         validator: (value) =>
                             RegexMethods.passwordValidator(value),
                       ),

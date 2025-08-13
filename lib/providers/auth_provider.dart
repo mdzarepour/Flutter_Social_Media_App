@@ -20,6 +20,12 @@ class AuthProvider extends ChangeNotifier {
   User? get currentUser => _auth.currentUser;
   Stream<User?> get stateChanges => _auth.userStateChanges;
 
+  bool passwordVis = false;
+  changePasswordVisibility() {
+    passwordVis = passwordVis ? false : true;
+    notifyListeners();
+  }
+
   Future<void> signUp({
     required String password,
     required String email,

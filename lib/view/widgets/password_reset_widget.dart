@@ -56,6 +56,7 @@ class _PasswordResetWidgetState extends State<PasswordResetWidget> {
                 controller: _emailController,
                 hint: AppStrings.email,
                 icon: Iconsax.send_1_copy,
+                isPassword: false,
                 validator: (value) => RegexMethods.emailValidator(value),
               ),
               SizedBox(

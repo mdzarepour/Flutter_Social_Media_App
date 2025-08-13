@@ -10,4 +10,6 @@ class AppStrings {
   static const String checkEmailVerify = 'check your email for verify';
   static const String createAccount = 'create cccount';
   static const String dontHaveAccount = 'dont have any account?  ';
+  static const String forgetPassword = 'forget your password?  ';
+  static const String resetPassword = 'reset password';
 }

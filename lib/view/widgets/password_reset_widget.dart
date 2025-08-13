@@ -33,60 +33,61 @@ class _PasswordResetWidgetState extends State<PasswordResetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Form(
-          key: _formKey,
-          child: Container(
-            decoration: BoxDecoration(
-              color: scheme.secondary,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-            height: constraints.maxHeight * 0.5,
-            child: Column(
-              spacing: 25,
-              children: [
-                TextFieldInputWidget(
-                  controller: _emailController,
-                  hint: AppStrings.email,
-                  icon: Iconsax.send_1_copy,
-                  validator: (value) => RegexMethods.emailValidator(value),
-                ),
-                SizedBox(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight * 0.11,
-                  child: FilledButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        _authProvider.sendPasswordResetEmail(
-                          _emailController.text,
+    Size size = MediaQuery.of(context).size;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Form(
+        key: _formKey,
+        child: Container(
+          decoration: BoxDecoration(
+            color: scheme.secondary,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+          height: size.height * 0.3,
+          child: Column(
+            spacing: 25,
+            children: [
+              TextFieldInputWidget(
+                controller: _emailController,
+                hint: AppStrings.email,
+                icon: Iconsax.send_1_copy,
+                validator: (value) => RegexMethods.emailValidator(value),
+              ),
+              SizedBox(
+                width: size.width,
+                height: size.height * 0.07,
+                child: FilledButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      _authProvider.sendPasswordResetEmail(
+                        _emailController.text,
+                      );
+                    }
+                  },
+                  child: Consumer<AuthProvider>(
+                    builder: (context, provider, child) {
+                      if (provider.authState == AuthState.loading) {
+                        return SpinKitThreeBounce(
+                          color: scheme.secondaryContainer,
+                          size: 20,
                         );
+                      } else if (provider.authState == AuthState.successfull) {
+                        return Text('check your email');
                       }
+                      return Text('send email');
                     },
-                    child: Consumer<AuthProvider>(
-                      builder: (context, provider, child) {
-                        if (provider.authState == AuthState.loading) {
-                          return SpinKitThreeBounce(
-                            color: scheme.secondaryContainer,
-                            size: 20,
-                          );
-                        } else if (provider.authState ==
-                            AuthState.successfull) {
-                          return Text('check your email');
-                        }
-                        return Text('send email');
-                      },
-                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

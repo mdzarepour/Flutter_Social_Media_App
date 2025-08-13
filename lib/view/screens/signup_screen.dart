@@ -42,86 +42,78 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme scheme = Theme.of(context).colorScheme;
+    Size size = MediaQuery.of(context).size;
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
       child: Scaffold(
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: constraints.maxWidth * 0.09,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: constraints.maxHeight * 0.2),
-                    Text(AppStrings.signUp, style: textTheme.headlineLarge),
-                    SizedBox(height: constraints.maxHeight * 0.02),
-                    Text(AppStrings.signUpMsg, style: textTheme.bodyMedium),
-                    SizedBox(height: constraints.maxHeight * 0.05),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFieldInputWidget(
-                            controller: _usernameController,
-                            hint: AppStrings.username,
-                            icon: Iconsax.user_copy,
-                            validator: (value) =>
-                                RegexMethods.usernameValidator(value),
-                          ),
-                          const SizedBox(height: 16),
-                          TextFieldInputWidget(
-                            controller: _biographyController,
-                            hint: AppStrings.biography,
-                            icon: Iconsax.information_copy,
-                            validator: (value) =>
-                                RegexMethods.biographyValidator(value),
-                          ),
-                          const SizedBox(height: 16),
-                          TextFieldInputWidget(
-                            controller: _emailController,
-                            hint: AppStrings.email,
-                            icon: Iconsax.send_1_copy,
-                            validator: (value) =>
-                                RegexMethods.emailValidator(value),
-                          ),
-                          const SizedBox(height: 16),
-                          TextFieldInputWidget(
-                            controller: _passwordController,
-                            hint: AppStrings.password,
-                            icon: Iconsax.key_copy,
-                            validator: (value) =>
-                                RegexMethods.passwordValidator(value),
-                          ),
-                          const SizedBox(height: 32),
-                          _signUpButton(constraints, scheme),
-                          SizedBox(height: constraints.maxHeight * 0.02),
-                          Text(
-                            textAlign: TextAlign.center,
-                            style: textTheme.bodySmall,
-                            context.watch<AuthProvider>().errorMessage ?? '',
-                          ),
-                        ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.09),
+            child: Column(
+              children: [
+                SizedBox(height: size.height * 0.2),
+                Text(AppStrings.signUp, style: textTheme.headlineLarge),
+                SizedBox(height: size.height * 0.02),
+                Text(AppStrings.signUpMsg, style: textTheme.bodyMedium),
+                SizedBox(height: size.height * 0.05),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFieldInputWidget(
+                        controller: _usernameController,
+                        hint: AppStrings.username,
+                        icon: Iconsax.user_copy,
+                        validator: (value) =>
+                            RegexMethods.usernameValidator(value),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: size.height * 0.02),
+                      TextFieldInputWidget(
+                        controller: _biographyController,
+                        hint: AppStrings.biography,
+                        icon: Iconsax.information_copy,
+                        validator: (value) =>
+                            RegexMethods.biographyValidator(value),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      TextFieldInputWidget(
+                        controller: _emailController,
+                        hint: AppStrings.email,
+                        icon: Iconsax.send_1_copy,
+                        validator: (value) =>
+                            RegexMethods.emailValidator(value),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      TextFieldInputWidget(
+                        controller: _passwordController,
+                        hint: AppStrings.password,
+                        icon: Iconsax.key_copy,
+                        validator: (value) =>
+                            RegexMethods.passwordValidator(value),
+                      ),
+                      SizedBox(height: size.height * 0.02),
+                      _signUpButton(size, scheme),
+                      SizedBox(height: size.height * 0.02),
+                      Text(
+                        style: textTheme.bodySmall,
+                        context.watch<AuthProvider>().errorMessage ?? '',
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _signUpButton(BoxConstraints constraints, ColorScheme scheme) {
+  Widget _signUpButton(Size size, ColorScheme scheme) {
     return SizedBox(
-      width: constraints.maxWidth,
-      height: constraints.maxHeight * 0.06,
+      width: size.width,
+      height: size.height * 0.06,
       child: FilledButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
